@@ -12,19 +12,28 @@ namespace NHibernateCourse.QuickStart
     {
         static void Main(string[] args)
         {
-            var sessionFactory = new Configuration()
-                .Configure("Hibernate.cfg.xml")
-                .BuildSessionFactory();
-
-            using(var session = sessionFactory.OpenSession())
-            using(var tx = session.BeginTransaction())
+            HibernatingRhinos.Profiler.Appender.NHibernate.NHibernateProfiler.Initialize();
+            try
             {
-                session.Save(new Student
-                                 {
-                                     Name = "John Adams"
-                                 });
 
-                tx.Commit();
+                var sessionFactory = new Configuration()
+                    .Configure("Hibernate.cfg.xml")
+                    .BuildSessionFactory();
+
+                using (var session = sessionFactory.OpenSession())
+                using (var tx = session.BeginTransaction())
+                {
+                    session.Save(new Student
+                    {
+                        Name = "John Adams"
+                    });
+
+                    tx.Commit();
+                }
+            }
+            finally
+            {
+                HibernatingRhinos.Profiler.Appender.ProfilerInfrastructure.FlushAllMessages();
             }
 
         }
