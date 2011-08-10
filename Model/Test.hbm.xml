@@ -2,17 +2,12 @@
                    namespace="NHibernateCourse.QuickStart.Model"
                    assembly="NHibernateCourse.QuickStart"
                    >
-  <class name="Student" table="Students">
+  <class name="Test" table="Tests">
     <id name="Id">
       <generator class="identity"/>
     </id>
-    <property name="Name"/>
-    <property name="Age"/>
-    <property name="IsBuly"/>
-    <set name="Tests">
-      <key column ="Student"/>
-      <one-to-many class="Test"/>
-    </set>
+    <property name="Score"/>
+    <many-to-one name="Student" class="Student" />
   </class>
   
 </hibernate-mapping>
