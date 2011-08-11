@@ -41,10 +41,39 @@ namespace NHibernateCourse.QuickStart
             using (var session = sessionFactory.OpenSession())
             using (var tx = session.BeginTransaction())
             {
-                session.CreateCriteria<Student>()
-                    .Add(Restrictions.Eq("Attributes.GPA4", "abc"))
-                    .List();
+                var student = new Student();
+                var test = new Test();
 
+                session.Save(student);
+                session.Save(test);
+
+                session.Save(new Penalty
+                                 {
+                                     Score = 5,
+                                     AttachedTo = test
+                                 });
+                session.Save(new Penalty
+                                 {
+                                     Score = 43,
+                                     AttachedTo = student
+                                 });
+
+                
+                tx.Commit();
+            }
+
+
+            using (var session = sessionFactory.OpenSession())
+            using (var tx = session.BeginTransaction())
+            {
+                var q = from student in session.Query<Student>()
+                        from penalty in student.Penalties
+                        where student.Name == "John"
+                        select penalty;
+
+                q.ToList();
+                
+               
                 tx.Commit();
             }
         }

@@ -35,10 +35,35 @@
       </composite-element>
     </list>
 
+    <set name="Penalties" where="AttachedToType = 'Student'">
+      <key column="AttachedToId"/>
+      <one-to-many class="Penalty"/>
+    </set>
+    
     <join table="People">
       <key column="StudentId"/>
       <property name="SSN"/>
     </join>
+    
+  </class>
+
+  <class name="Penalty">
+    <id column="Id" type="System.Int32">
+      <generator class="identity"/>
+    </id>
+    <property name="Score"/>
+
+    <any name="AttachedTo"
+         id-type="System.Int32"
+         meta-type="System.String">
+
+      <meta-value value="Student" class="Student"/>
+      <meta-value class="Test" value="Test"/>
+      
+      <column name="AttachedToType"/>
+      <column name="AttachedToId"/>
+    </any>
+    
   </class>
 
   <class name="User" table="Users">
