@@ -9,10 +9,25 @@
     <property name="Name"/>
     <property name="Age"/>
     <property name="IsBuly"/>
-    <set name="Tests">
+    <set name="Tests" cascade="all" inverse="true">
       <key column ="Student"/>
       <one-to-many class="Test"/>
     </set>
+    <list name="EmergencyPhones" table="EmergencyPhone" inverse="true">
+      <key column="StudentId" />
+      <index column="Position"/>
+      <one-to-many class="EmergencyPhone"/>
+    </list>
+  </class>
+
+  <class name="EmergencyPhone">
+    <composite-id>
+      <key-property name="StudentId"/>
+      <key-property name="Position"/>
+    </composite-id>
+    <property name="Phone"/>
+    <property name="NameOfCallee"/>
+    <property name="SpokenLanguage"/>
   </class>
   
 </hibernate-mapping>

@@ -71,9 +71,12 @@
   <ItemGroup>
     <Content Include="Hibernate.cfg.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <EmbeddedResource Include="Model\Test.hbm.xml" />
-    <EmbeddedResource Include="Model\Student.hbm.xml" />
+    <EmbeddedResource Include="Model\Student.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

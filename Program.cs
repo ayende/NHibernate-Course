@@ -37,10 +37,25 @@ namespace NHibernateCourse.QuickStart
             using (var session = sessionFactory.OpenSession())
             using (var tx = session.BeginTransaction())
             {
-                var test = session.Get<Test>(1);
-                Console.WriteLine(test.Student.GetType().Name);
+                var student = new Student
+                                  {
+                                      Name = "John",
+                                  };
+                session.Save(student);
 
-                tx.Rollback();
+                var emergencyPhone = new EmergencyPhone
+                                         {
+                                             StudentId = student.Id,
+                                             Position = student.EmergencyPhones.Count-1,
+                                             NameOfCallee = "Mom",
+                                             Phone = "19231",
+                                             SpokenLanguage = "Hindu"
+                                         };
+
+                session.Save(emergencyPhone);
+                student.EmergencyPhones.Add(emergencyPhone);
+
+                tx.Commit();
             }
         }
     }
