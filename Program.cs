@@ -30,6 +30,8 @@ namespace NHibernateCourse.QuickStart
                 HibernatingRhinos.Profiler.Appender.ProfilerInfrastructure.FlushAllMessages();
             }
 
+            Console.ReadLine();
+
         }
 
         private static void Action(ISessionFactory sessionFactory)

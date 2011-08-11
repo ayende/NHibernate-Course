@@ -7,36 +7,26 @@
       <generator class="identity"/>
     </id>
     <property name="Name"/>
-   
-  </class>
 
-  <class name="Graphic">
-    <id name="Id">
-      <generator class="identity"/>
-    </id>
-    <property name="Name"/>
-    <property name="Type"/>
-  </class>
+    <joined-subclass name="Graphic">
+      <key column="FileId"/>
 
-  <class name="Final">
-    <id name="Id">
-      <generator class="identity"/>
-    </id>
+      <property name="Type"/>
+      
+      <joined-subclass name="Final">
+        <key column="FileId"/>
 
-    <property name="Name"/>
-    <property name="Type"/>
-    <property name="ColorDepth"/>
-  </class>
-  
-  <class name="Rough">
-    <id name="Id">
-      <generator class="identity"/>
-    </id>
-    <property name="Name"/>
-    <property name="Type"/>
+        <property name="ColorDepth"/>
+      </joined-subclass>
 
-    <property name="Height"/>
-    <property name="Width"/>
+      <joined-subclass name="Rough">
+        <key column="FileId"/>
+
+        <property name="Height"/>
+        <property name="Width"/>
+      </joined-subclass>
+    </joined-subclass>
+
   </class>
 
 
