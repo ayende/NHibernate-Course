@@ -19,6 +19,7 @@
       <property name="HouseNumber"/>
     </component>
 
+    
     <dynamic-component name="Attributes">
       <property name="GPA4" type="System.String"/>
       <property name="GPA5" type="System.Int32"/>
@@ -33,6 +34,11 @@
         <property name="SpokenLanguage"/>
       </composite-element>
     </list>
+
+    <join table="People">
+      <key column="StudentId"/>
+      <property name="SSN"/>
+    </join>
   </class>
 
   <class name="User" table="Users">

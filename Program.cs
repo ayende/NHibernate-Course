@@ -37,31 +37,7 @@ namespace NHibernateCourse.QuickStart
 
         private static void Action(ISessionFactory sessionFactory)
         {
-            using (var session = sessionFactory.OpenSession())
-            using (var tx = session.BeginTransaction())
-            {
-                session.Save(new Student
-                                 {
-                                     Address = new Address
-                                                   {
-                                                       City = "Redding",
-                                                       HouseNumber = "3474",
-                                                       Street = "Electro Way"
-                                                   },
-                                     Age = 15,
-                                     Name = "Frank",
-                                     Attributes = new Hashtable
-                                                      {
-                                                          {"GPA4", "abc"},
-                                                          {"GPA5", 32}
-                                                      }
-                                 });
-
-
-
-                tx.Commit();
-            }
-
+            
             using (var session = sessionFactory.OpenSession())
             using (var tx = session.BeginTransaction())
             {
