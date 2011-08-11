@@ -4,28 +4,25 @@
                    >
   <class name="File" table="Files">
     <id name="Id">
-      <generator class="identity"/>
+      <generator class="hilo" />
     </id>
     <property name="Name"/>
 
-    <joined-subclass name="Graphic">
-      <key column="FileId"/>
+    <union-subclass name="Graphic">
 
       <property name="Type"/>
       
-      <joined-subclass name="Final">
-        <key column="FileId"/>
+      <union-subclass name="Final">
 
         <property name="ColorDepth"/>
-      </joined-subclass>
+      </union-subclass>
 
-      <joined-subclass name="Rough">
-        <key column="FileId"/>
+      <union-subclass name="Rough">
 
         <property name="Height"/>
         <property name="Width"/>
-      </joined-subclass>
-    </joined-subclass>
+      </union-subclass>
+    </union-subclass>
 
   </class>
 
