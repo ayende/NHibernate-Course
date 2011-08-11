@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 
 namespace NHibernateCourse.QuickStart.Model
 {
@@ -8,7 +9,7 @@ namespace NHibernateCourse.QuickStart.Model
         public virtual string Name { get; set; }
 
         public virtual int Age { get; set; }
-
+        public virtual IDictionary Attributes { get; set; } 
         public virtual bool IsBuly { get; set; }
 
         public virtual ICollection<Test> Tests { get; set; }

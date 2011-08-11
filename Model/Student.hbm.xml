@@ -18,6 +18,12 @@
       <property name="Street"/>
       <property name="HouseNumber"/>
     </component>
+
+    <dynamic-component name="Attributes">
+      <property name="GPA4" type="System.String"/>
+      <property name="GPA5" type="System.Int32"/>
+    </dynamic-component>
+    
     <list name="EmergencyPhones" table="EmergencyPhone">
       <key column="StudentId" />
       <index column="Position"/>

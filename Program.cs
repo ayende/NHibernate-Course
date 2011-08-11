@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -48,7 +49,12 @@ namespace NHibernateCourse.QuickStart
                                                        Street = "Electro Way"
                                                    },
                                      Age = 15,
-                                     Name = "Frank"
+                                     Name = "Frank",
+                                     Attributes = new Hashtable
+                                                      {
+                                                          {"GPA4", "abc"},
+                                                          {"GPA5", 32}
+                                                      }
                                  });
 
 
@@ -59,7 +65,9 @@ namespace NHibernateCourse.QuickStart
             using (var session = sessionFactory.OpenSession())
             using (var tx = session.BeginTransaction())
             {
-                Console.WriteLine(session.Get<Student>(1).Address.City);
+                session.CreateCriteria<Student>()
+                    .Add(Restrictions.Eq("Attributes.GPA4", "abc"))
+                    .List();
 
                 tx.Commit();
             }
