@@ -41,24 +41,25 @@ namespace NHibernateCourse.QuickStart
             using (var session = sessionFactory.OpenSession())
             using (var tx = session.BeginTransaction())
             {
-                var student = new Student();
-                var test = new Test();
+                var penalty = new Penalty
+                                  {
+                                      AttachedToMany = new List<object>()
+                                  };
 
-                session.Save(student);
-                session.Save(test);
+                for (int i = 0; i < 15; i++)
+                {
+                    var student = new Student();
+                    var test = new Test();
 
-                session.Save(new Penalty
-                                 {
-                                     Score = 5,
-                                     AttachedTo = test
-                                 });
-                session.Save(new Penalty
-                                 {
-                                     Score = 43,
-                                     AttachedTo = student
-                                 });
+                    session.Save(student);
+                    session.Save(test);
 
-                
+                    penalty.AttachedToMany.Add(student);
+                    penalty.AttachedToMany.Add(test);
+                }
+
+                session.Save(penalty);
+
                 tx.Commit();
             }
 
@@ -66,14 +67,14 @@ namespace NHibernateCourse.QuickStart
             using (var session = sessionFactory.OpenSession())
             using (var tx = session.BeginTransaction())
             {
-                var q = from student in session.Query<Student>()
-                        from penalty in student.Penalties
-                        where student.Name == "John"
-                        select penalty;
+                var penalty = session.Get<Penalty>(1);
 
-                q.ToList();
-                
-               
+                foreach (var o in penalty.AttachedToMany)
+                {
+                    Console.WriteLine(o.ToString());
+                }
+
+
                 tx.Commit();
             }
         }

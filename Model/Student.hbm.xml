@@ -2,7 +2,7 @@
                    namespace="NHibernateCourse.QuickStart.Model"
                    assembly="NHibernateCourse.QuickStart"
                    >
-  <class name="Student" table="Students">
+  <class name="Student" table="Students" batch-size="30">
     <id name="Id">
       <generator class="identity"/>
     </id>
@@ -53,6 +53,21 @@
     </id>
     <property name="Score"/>
 
+    <set name="AttachedToMany" table="ScaryManyToAny">
+      <key column="PenaltyId"/>
+      <many-to-any 
+         id-type="System.Int32"
+         meta-type="System.String" >
+        
+        <meta-value value="Student" class="Student"/>
+        <meta-value class="Test" value="Test"/>
+
+        <column name="AttachedToType"/>
+        <column name="AttachedToId"/>
+      </many-to-any>
+      
+    </set>
+    
     <any name="AttachedTo"
          id-type="System.Int32"
          meta-type="System.String">
