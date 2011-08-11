@@ -13,6 +13,11 @@
       <key column ="Student"/>
       <one-to-many class="Test"/>
     </set>
+    <component name="Address" lazy="true">
+      <property name="City"/>
+      <property name="Street"/>
+      <property name="HouseNumber"/>
+    </component>
     <list name="EmergencyPhones" table="EmergencyPhone">
       <key column="StudentId" />
       <index column="Position"/>

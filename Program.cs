@@ -39,25 +39,27 @@ namespace NHibernateCourse.QuickStart
             using (var session = sessionFactory.OpenSession())
             using (var tx = session.BeginTransaction())
             {
-
-                session.Get<Graphic>(1);
-                session.Get<Final>(1);
-
-                session.Save(new Rough
+                session.Save(new Student
                                  {
-                                     Name = "a",
-                                     Height = 480,
-                                     Width = 680,
-                                     ImageType = "png",
+                                     Address = new Address
+                                                   {
+                                                       City = "Redding",
+                                                       HouseNumber = "3474",
+                                                       Street = "Electro Way"
+                                                   },
+                                     Age = 15,
+                                     Name = "Frank"
                                  });
 
-                session.CreateCriteria<File>()
-                    .Add(Restrictions.Eq("Name", "b"))
-                    .List();
 
-                session.Query<Final>()
-                    .Where(x => x.ColorDepth > 16)
-                    .ToList();
+
+                tx.Commit();
+            }
+
+            using (var session = sessionFactory.OpenSession())
+            using (var tx = session.BeginTransaction())
+            {
+                Console.WriteLine(session.Get<Student>(1).Address.City);
 
                 tx.Commit();
             }

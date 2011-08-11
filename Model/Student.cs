@@ -13,13 +13,20 @@ namespace NHibernateCourse.QuickStart.Model
 
         public virtual ICollection<Test> Tests { get; set; }
 
-        public virtual IList<EmergencyPhone> EmergencyPhones { get; set; } 
-
+        public virtual IList<EmergencyPhone> EmergencyPhones { get; set; }
+        public virtual Address Address { get; set; }
         public Student()
         {
             Tests = new HashSet<Test>();
             EmergencyPhones = new List<EmergencyPhone>();
         }
+    }
+
+    public class Address
+    {
+        public string HouseNumber { get; set; }
+        public string Street { get; set; }
+        public string City { get; set; }
     }
 
     public class EmergencyPhone
