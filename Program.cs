@@ -1,15 +1,8 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Text;
 using NHibernate;
 using NHibernate.Cfg;
-using NHibernate.Criterion;
 using NHibernateCourse.QuickStart.Model;
-using NHibernate.Linq;
 
 namespace NHibernateCourse.QuickStart
 {
@@ -37,43 +30,21 @@ namespace NHibernateCourse.QuickStart
 
         private static void Action(ISessionFactory sessionFactory)
         {
-            
             using (var session = sessionFactory.OpenSession())
             using (var tx = session.BeginTransaction())
             {
-                var penalty = new Penalty
-                                  {
-                                      AttachedToMany = new List<object>()
-                                  };
+                session.Save(new Test {Score = 10});
 
-                for (int i = 0; i < 15; i++)
-                {
-                    var student = new Student();
-                    var test = new Test();
-
-                    session.Save(student);
-                    session.Save(test);
-
-                    penalty.AttachedToMany.Add(student);
-                    penalty.AttachedToMany.Add(test);
-                }
-
-                session.Save(penalty);
 
                 tx.Commit();
             }
 
-
             using (var session = sessionFactory.OpenSession())
             using (var tx = session.BeginTransaction())
             {
-                var penalty = session.Get<Penalty>(1);
-
-                foreach (var o in penalty.AttachedToMany)
-                {
-                    Console.WriteLine(o.ToString());
-                }
-
+                var test = session.Get<Test>(1);
+                session.Lock(test, LockMode.Upgrade);
+                test.Score += 10;
 
                 tx.Commit();
             }

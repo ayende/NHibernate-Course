@@ -6,8 +6,17 @@
     <id name="Id">
       <generator class="identity"/>
     </id>
-    <property name="Score"/>
+    <version name="Timestamp" 
+             generated="always"
+             type="BinaryBlob"
+             unsaved-value="null">
+      <column name="Timestamp"
+              sql-type="timestamp"
+              />
+    </version>
+    <property name="Score" />
     <many-to-one name="Student" class="Student" />
+
   </class>
   
 </hibernate-mapping>
