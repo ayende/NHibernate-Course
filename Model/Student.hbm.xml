@@ -13,21 +13,34 @@
       <key column ="Student"/>
       <one-to-many class="Test"/>
     </set>
-    <list name="EmergencyPhones" table="EmergencyPhone" inverse="true">
+    <list name="EmergencyPhones" table="EmergencyPhone">
       <key column="StudentId" />
       <index column="Position"/>
-      <one-to-many class="EmergencyPhone"/>
+      <composite-element class="EmergencyPhone">
+        <property name="Phone"/>
+        <property name="NameOfCallee"/>
+        <property name="SpokenLanguage"/>
+      </composite-element>
     </list>
   </class>
 
-  <class name="EmergencyPhone">
-    <composite-id>
-      <key-property name="StudentId"/>
-      <key-property name="Position"/>
-    </composite-id>
-    <property name="Phone"/>
-    <property name="NameOfCallee"/>
-    <property name="SpokenLanguage"/>
+  <class name="User" table="Users">
+    <id name="Username">
+      <generator class="assigned"/>
+    </id>
+    <set name ="Groups" table="UsersAndGroups">
+      <key>
+        <column name="UserName"/>
+      </key>
+      <many-to-many column="GroupName" class="Group"/>
+    </set>
+  </class>
+
+
+  <class name="Group" table="Groups">
+    <id name="Name">
+      <generator class="assigned"/>
+    </id>
   </class>
   
 </hibernate-mapping>
