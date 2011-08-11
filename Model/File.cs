@@ -8,7 +8,7 @@
 
     public class Graphic : File
     {
-        public virtual string Type { get; set; }
+        public virtual string ImageType { get; set; }
     }
 
     public class Final : Graphic

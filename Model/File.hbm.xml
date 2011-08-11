@@ -2,27 +2,28 @@
                    namespace="NHibernateCourse.QuickStart.Model"
                    assembly="NHibernateCourse.QuickStart"
                    >
-  <class name="File" table="Files">
+  <class name="File" table="Files" discriminator-value="File">
     <id name="Id">
-      <generator class="hilo" />
+      <generator class="identity" />
     </id>
-    <property name="Name"/>
+    <discriminator column="Type" type="System.String" />
+    
+    <property name="Name" />
 
-    <union-subclass name="Graphic">
+    <subclass name="Graphic" discriminator-value="Graphic">
 
-      <property name="Type"/>
+      <property name="ImageType" />
       
-      <union-subclass name="Final">
+      <subclass name="Final" discriminator-value="Final">
 
         <property name="ColorDepth"/>
-      </union-subclass>
+      </subclass>
 
-      <union-subclass name="Rough">
-
+      <subclass name="Rough" discriminator-value="Rough">
         <property name="Height"/>
         <property name="Width"/>
-      </union-subclass>
-    </union-subclass>
+      </subclass>
+    </subclass>
 
   </class>
 

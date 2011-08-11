@@ -48,12 +48,12 @@ namespace NHibernateCourse.QuickStart
                                      Name = "a",
                                      Height = 480,
                                      Width = 680,
-                                     Type = "png"
+                                     ImageType = "png",
                                  });
 
-                session.Query<File>()
-                    .Where(x => x.Name == "b")
-                    .ToList();
+                session.CreateCriteria<File>()
+                    .Add(Restrictions.Eq("Name", "b"))
+                    .List();
 
                 session.Query<Final>()
                     .Where(x => x.ColorDepth > 16)
