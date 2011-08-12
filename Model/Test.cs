@@ -7,7 +7,7 @@ namespace NHibernateCourse.QuickStart.Model
         public virtual int Id { get; set; }
         public virtual Student Student { get; set; }
         public virtual int Score { get; set; }
-        public virtual byte[] Timestamp { get; set; }
+        public virtual int ClientId { get; set; }
         public virtual ICollection<Question> Questions { get; set; }
     }
 

@@ -40,6 +40,9 @@ namespace NHibernateCourse.QuickStart
             using (var session = sessionFactory.OpenSession())
             using (var tx = session.BeginTransaction())
             {
+                var enableFilter = session.EnableFilter("ByClientId");
+                enableFilter.SetParameterList("clientId", new[] { 12, 23, 4 });
+
                 session.Query<Question>()
                     .Where(x=>x.Test.Score == 1)
                     .FetchMany(x=>x.Answers)

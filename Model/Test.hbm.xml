@@ -8,11 +8,12 @@
       <generator class="identity"/>
     </id>
     <property name="Score" />
-    
+    <property name="ClientId"/>
     <set name="Questions">
       <key column="TestId"/>
       <one-to-many class="Question"/>
     </set>
+    <filter name="ByClientId"/>
   </class>
 
   <class name="Question">
@@ -29,7 +30,6 @@
     </set>
   </class>
 
-
   <class name="Answer">
     <id name="Id">
       <generator class="identity"/>
@@ -37,5 +37,10 @@
     <property name="Text"/>
 
   </class>
+
+
+  <filter-def name="ByClientId" condition="ClientId in (:clientId)">
+    <filter-param name="clientId" type="System.Int32"/>
+  </filter-def>
   
 </hibernate-mapping>
