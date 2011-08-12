@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using NHibernate;
 using NHibernate.Cfg;
 using NHibernate.Criterion;
+using NHibernate.Linq;
 using NHibernateCourse.QuickStart.Model;
 
 namespace NHibernateCourse.QuickStart
@@ -56,7 +58,9 @@ namespace NHibernateCourse.QuickStart
                                                      {
                                                          {"Blind", blind},
                                                          {"Deaf", deaf},
-                                                         {"Thunder", thunder}
+                                                         {"Thunder", thunder},
+                                                         {"Thunder2", thunder},
+                                                         {"Thunder3", thunder}
                                                      }
                                  });
 
@@ -64,17 +68,18 @@ namespace NHibernateCourse.QuickStart
                 tx.Commit();
             }
 
-            using (var session = sessionFactory.OpenSession())
-            using (var tx = session.BeginTransaction())
+            for (int i = 0; i < 5; i++)
             {
-                var load = session.Load<Test>(1);
-
-                foreach (var penalty in load.Penalties)
+                using (var session = sessionFactory.OpenSession())
+                using (var tx = session.BeginTransaction())
                 {
-                    Console.WriteLine("{0}: {1}", penalty.Key, penalty.Value.Score);
-                }
+                    session.Query<Test>()
+                        .Cacheable()
+                        .Where(x => x.Score == 10)
+                        .ToList();
 
-                tx.Commit();
+                    tx.Commit();
+                }
             }
         }
     }

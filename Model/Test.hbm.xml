@@ -3,6 +3,7 @@
                    assembly="NHibernateCourse.QuickStart"
                    >
   <class name="Test" table="Tests" batch-size="10">
+    <cache usage="read-write"/>
     <id name="Id">
       <generator class="identity"/>
     </id>
@@ -18,6 +19,7 @@
     <many-to-one name="Student" class="Student" />
 
     <map name="Penalties" table="TestPenalties">
+      <cache usage="read-write"/>
       <key column="TestId"/>
       <index column="TheKey" type="System.String"/>
       <many-to-many column="PenaltyId" class="Penalty" />

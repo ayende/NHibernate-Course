@@ -48,6 +48,7 @@
   </class>
 
   <class name="Penalty">
+    <cache usage="read-write"/>
     <id column="Id" type="System.Int32">
       <generator class="identity"/>
     </id>
