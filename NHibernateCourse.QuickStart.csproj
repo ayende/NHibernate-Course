@@ -54,6 +54,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\Collections.cs" />
     <Compile Include="Model\File.cs" />
     <Compile Include="Model\Penalty.cs" />
     <Compile Include="Model\References.cs" />

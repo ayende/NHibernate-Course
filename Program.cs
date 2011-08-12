@@ -10,6 +10,8 @@ using NHibernate.Cfg;
 using NHibernate.Criterion;
 using NHibernate.Event;
 using NHibernate.Linq;
+using NHibernate.SqlCommand;
+using NHibernate.Type;
 using NHibernateCourse.QuickStart.Model;
 
 namespace NHibernateCourse.QuickStart
@@ -49,10 +51,9 @@ namespace NHibernateCourse.QuickStart
             using (var tx = session.BeginTransaction())
             {
 
-                session.Save(new Test
-                                 {
-                                     State = StateNames.TX
-                                 });
+                QueryDynamically<Test>(session,
+                    "Id in (select Id from Students where IsBuly = 0)",
+                    new QueryOp {Field = "Score", Operator = "=", Value = 1});
 
                 tx.Commit();
             }
@@ -93,9 +94,13 @@ namespace NHibernateCourse.QuickStart
             }
         }
 
-        private static IList<T> QueryDynamically<T>(ISession session, params QueryOp[] ops) where T : class
+        private static IList<T> QueryDynamically<T>(ISession session, string studentFilter, params QueryOp[] ops) where T : class
         {
             var query = session.CreateCriteria<T>();
+
+            query.Add(new SQLCriterion(new SqlString(studentFilter), new object[0],
+                                                                   new IType[0]));
+
             foreach (var operationsOnField in ops.GroupBy(x => x.Field))
             {
                 var criteria = new List<ICriterion>();

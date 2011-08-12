@@ -9,7 +9,7 @@ namespace NHibernateCourse.QuickStart.Model
         public virtual int Score { get; set; }
         public virtual int ClientId { get; set; }
         public virtual ICollection<Question> Questions { get; set; }
-        public virtual State State { get; set; }
+
         public virtual bool IsValid
         {
             get { return Score > 0; }
@@ -21,12 +21,17 @@ namespace NHibernateCourse.QuickStart.Model
         bool IsValid { get; }
     }
 
-    public class Question
+    public class Question : IWantValidationOldStyleWay
     {
         public virtual int Id { get; set; }
         public virtual string Text { get; set; }
         public virtual Test Test { get; set; }
         public virtual ICollection<Answer> Answers { get; set; }
+
+        public virtual bool IsValid
+        {
+            get { return Test.Score > 10; }
+        }
     }
 
     public class Answer

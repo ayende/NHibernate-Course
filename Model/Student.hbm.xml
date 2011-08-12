@@ -25,7 +25,7 @@
       <property name="GPA5" type="System.Int32"/>
     </dynamic-component>
     
-    <list name="EmergencyPhones" table="EmergencyPhone">
+    <list name="EmergencyPhones" table="EmergencyPhone" access="none">
       <key column="StudentId" />
       <index column="Position"/>
       <composite-element class="EmergencyPhone">
