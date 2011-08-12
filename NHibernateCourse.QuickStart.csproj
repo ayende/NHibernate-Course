@@ -56,10 +56,12 @@
   <ItemGroup>
     <Compile Include="Model\File.cs" />
     <Compile Include="Model\Penalty.cs" />
+    <Compile Include="Model\References.cs" />
     <Compile Include="Model\Student.cs" />
     <Compile Include="Model\Test.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ValidationListener.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

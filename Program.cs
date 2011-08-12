@@ -8,6 +8,7 @@ using System.Threading;
 using NHibernate;
 using NHibernate.Cfg;
 using NHibernate.Criterion;
+using NHibernate.Event;
 using NHibernate.Linq;
 using NHibernateCourse.QuickStart.Model;
 
@@ -20,8 +21,14 @@ namespace NHibernateCourse.QuickStart
             HibernatingRhinos.Profiler.Appender.NHibernate.NHibernateProfiler.Initialize();
             try
             {
-                var sessionFactory = new Configuration()
-                    .Configure("Hibernate.cfg.xml")
+                var configuration = new Configuration()
+                    .Configure("Hibernate.cfg.xml");
+                configuration
+                    .SetListener(ListenerType.PreUpdate, new ValidationListener());
+                configuration
+                    .SetListener(ListenerType.PreInsert, new ValidationListener());
+
+                var sessionFactory = configuration
                     .BuildSessionFactory();
 
                 Action(sessionFactory);
@@ -42,14 +49,10 @@ namespace NHibernateCourse.QuickStart
             using (var tx = session.BeginTransaction())
             {
 
-                QueryDynamically<Test>(session,
-                    new QueryOp { Field = "Score", Operator = "=", Value = 1 },
-                    new QueryOp { Field = "Score", Operator = "=", Value = 5 },
-                    new QueryOp { Field = "ClientId", Operator = ">", Value = 1 },
-                    new QueryOp { Field = "ClientId", Operator = "<", Value = 3 },
-                    new QueryOp { Field = "Questions.Text", Operator = "=", Value = "Hello" },
-                    new QueryOp { Field = "Questions.Text", Operator = "=", Value = "Bye" }
-                    );
+                session.Save(new Test
+                                 {
+                                     State = StateNames.TX
+                                 });
 
                 tx.Commit();
             }
