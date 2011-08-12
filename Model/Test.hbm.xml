@@ -17,6 +17,11 @@
     <property name="Score" />
     <many-to-one name="Student" class="Student" />
 
+    <map name="Penalties" table="TestPenalties">
+      <key column="TestId"/>
+      <index column="TheKey" type="System.String"/>
+      <many-to-many column="PenaltyId" class="Penalty" />
+    </map>
   </class>
   
 </hibernate-mapping>

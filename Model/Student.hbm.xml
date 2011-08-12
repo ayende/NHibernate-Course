@@ -35,7 +35,7 @@
       </composite-element>
     </list>
 
-    <set name="Penalties" where="AttachedToType = 'Student'">
+    <set name="Penalties" where="AttachedToType = 'Student'" access="none">
       <key column="AttachedToId"/>
       <one-to-many class="Penalty"/>
     </set>
