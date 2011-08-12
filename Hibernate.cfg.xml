@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <hibernate-configuration xmlns="urn:nhibernate-configuration-2.2">
   <session-factory>
-    <property name="hbm2ddl.auto">create</property>
+    <!--<property name="hbm2ddl.auto">create</property>-->
     <property name="connection.connection_string_name">Default</property>
     <property name="dialect">NHibernate.Dialect.MsSql2008Dialect</property>
 

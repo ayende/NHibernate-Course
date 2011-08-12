@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using NHibernate;
 using NHibernate.Cfg;
 using NHibernate.Criterion;
@@ -30,7 +31,7 @@ namespace NHibernateCourse.QuickStart
                 HibernatingRhinos.Profiler.Appender.ProfilerInfrastructure.FlushAllMessages();
             }
 
-            Console.ReadLine();
+            Thread.Sleep(1000);
 
         }
 
@@ -40,25 +41,106 @@ namespace NHibernateCourse.QuickStart
             using (var session = sessionFactory.OpenSession())
             using (var tx = session.BeginTransaction())
             {
-                var enableFilter = session.EnableFilter("ByClientId");
-                enableFilter.SetParameterList("clientId", new[] { 12, 23, 4 });
 
-                session.Query<Question>()
-                    .Where(x=>x.Test.Score == 1)
-                    .FetchMany(x=>x.Answers)
-                    .ToList();
-
-                var test = session.Query<Test>()
-                    .FetchMany(x => x.Questions)
-                    .Where(x=>x.Score == 1)
-                    .ToList();
-
-
-
-                ObjectDumper.Write(test, 1);
+                QueryDynamically<Test>(session,
+                    new QueryOp { Field = "Score", Operator = "=", Value = 1 },
+                    new QueryOp { Field = "Score", Operator = "=", Value = 5 },
+                    new QueryOp { Field = "ClientId", Operator = ">", Value = 1 },
+                    new QueryOp { Field = "ClientId", Operator = "<", Value = 3 },
+                    new QueryOp { Field = "Questions.Text", Operator = "=", Value = "Hello" },
+                    new QueryOp { Field = "Questions.Text", Operator = "=", Value = "Bye" }
+                    );
 
                 tx.Commit();
             }
+        }
+
+        public class QueryOp
+        {
+            public string Field;
+            public object Value;
+            public string Operator;
+         
+        }
+
+        public class FieldHelper
+        {
+            public string Field;
+
+            public string JustField
+            {
+                get
+                {
+                    var lastIndexOf = Field.LastIndexOf('.');
+
+                    return Field.Substring(lastIndexOf + 1);
+
+                }
+            }
+            public string Path
+            {
+                get
+                {
+                    var lastIndexOf = Field.LastIndexOf('.');
+                    if (lastIndexOf == -1)
+                        return null;
+
+                    return Field.Substring(0, lastIndexOf);
+                }
+            }
+        }
+
+        private static IList<T> QueryDynamically<T>(ISession session, params QueryOp[] ops) where T : class
+        {
+            var query = session.CreateCriteria<T>();
+            foreach (var operationsOnField in ops.GroupBy(x => x.Field))
+            {
+                var criteria = new List<ICriterion>();
+                var fieldHelper = new FieldHelper { Field = operationsOnField.Key };
+                foreach (var queryOp in operationsOnField)
+                {
+                    switch (queryOp.Operator)
+                    {
+                        case "=":
+                            criteria.Add(Restrictions.Eq(fieldHelper.JustField, queryOp.Value));
+                            break;
+                        case ">":
+                            criteria.Add(Restrictions.Gt(fieldHelper.JustField, queryOp.Value));
+                            break;
+                        case "<":
+                            criteria.Add(Restrictions.Lt(fieldHelper.JustField, queryOp.Value));
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException(queryOp.Operator);
+                    }
+                }
+                var currentQuery = query;
+                if(fieldHelper.Path != null)
+                {
+                    currentQuery = query.GetCriteriaByPath(fieldHelper.Path)
+                                   ?? query.CreateCriteria(fieldHelper.Path);
+                }
+                switch (criteria.Count)
+                {
+                    case 0:
+                        break;
+                    case 1:
+                        currentQuery.Add(criteria.First());
+                        break;
+                    default:
+                        var dis = new Disjunction();
+
+                        foreach (var criterion in criteria)
+                        {
+                            dis.Add(criterion);
+                        }
+
+                        currentQuery.Add(dis);
+                        break;
+                }
+            }
+
+            return query.List<T>();
         }
     }
 
