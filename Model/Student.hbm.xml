@@ -13,7 +13,7 @@
       <key column ="Student"/>
       <one-to-many class="Test"/>
     </set>
-    <component name="Address" lazy="true">
+    <component name="Address">
       <property name="City"/>
       <property name="Street"/>
       <property name="HouseNumber"/>
@@ -35,16 +35,6 @@
       </composite-element>
     </list>
 
-    <set name="Penalties" where="AttachedToType = 'Student'" access="none">
-      <key column="AttachedToId"/>
-      <one-to-many class="Penalty"/>
-    </set>
-    
-    <join table="People">
-      <key column="StudentId"/>
-      <property name="SSN"/>
-    </join>
-    
   </class>
 
   <class name="Penalty">

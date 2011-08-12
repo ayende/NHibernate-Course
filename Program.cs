@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using NHibernate;
 using NHibernate.Cfg;
 using NHibernate.Criterion;
@@ -33,54 +36,213 @@ namespace NHibernateCourse.QuickStart
 
         private static void Action(ISessionFactory sessionFactory)
         {
+
             using (var session = sessionFactory.OpenSession())
             using (var tx = session.BeginTransaction())
             {
-                var blind = new Penalty
-                                  {
-                                      Score = 15
-                                  };
-                var deaf = new Penalty
-                               {
-                                   Score = 10
-                               };
-                var thunder = new Penalty
-                                  {
-                                      Score = -5
-                                  };
-                session.Save(blind);
-                session.Save(deaf);
-                session.Save(thunder);
-                session.Save(new Test
-                                 {
-                                     Score = 10,
-                                     Penalties = new Dictionary<string, Penalty>
-                                                     {
-                                                         {"Blind", blind},
-                                                         {"Deaf", deaf},
-                                                         {"Thunder", thunder},
-                                                         {"Thunder2", thunder},
-                                                         {"Thunder3", thunder}
-                                                     }
-                                 });
+                session.Query<Question>()
+                    .Where(x=>x.Test.Score == 1)
+                    .FetchMany(x=>x.Answers)
+                    .ToList();
 
+                var test = session.Query<Test>()
+                    .FetchMany(x => x.Questions)
+                    .Where(x=>x.Score == 1)
+                    .ToList();
+
+
+
+                ObjectDumper.Write(test, 1);
 
                 tx.Commit();
             }
+        }
+    }
 
-            for (int i = 0; i < 5; i++)
+
+    // See the ReadMe.html for additional information
+    public class ObjectDumper
+    {
+
+        public static void Write(object element)
+        {
+            Write(element, 0);
+        }
+
+        public static void Write(object element, int depth)
+        {
+            Write(element, depth, Console.Out);
+        }
+
+        public static void Write(object element, int depth, TextWriter log)
+        {
+            ObjectDumper dumper = new ObjectDumper(depth);
+            dumper.writer = log;
+            dumper.WriteObject(null, element);
+        }
+
+        TextWriter writer;
+        int pos;
+        int level;
+        int depth;
+
+        private ObjectDumper(int depth)
+        {
+            this.depth = depth;
+        }
+
+        private void Write(string s)
+        {
+            if (s != null)
             {
-                using (var session = sessionFactory.OpenSession())
-                using (var tx = session.BeginTransaction())
-                {
-                    session.Query<Test>()
-                        .Cacheable()
-                        .Where(x => x.Score == 10)
-                        .ToList();
+                writer.Write(s);
+                pos += s.Length;
+            }
+        }
 
-                    tx.Commit();
+        private void WriteIndent()
+        {
+            for (int i = 0; i < level; i++) writer.Write("  ");
+        }
+
+        private void WriteLine()
+        {
+            writer.WriteLine();
+            pos = 0;
+        }
+
+        private void WriteTab()
+        {
+            Write("  ");
+            while (pos % 8 != 0) Write(" ");
+        }
+
+        private void WriteObject(string prefix, object element)
+        {
+            if (element == null || element is ValueType || element is string)
+            {
+                WriteIndent();
+                Write(prefix);
+                WriteValue(element);
+                WriteLine();
+            }
+            else
+            {
+                IEnumerable enumerableElement = element as IEnumerable;
+                if (enumerableElement != null)
+                {
+                    foreach (object item in enumerableElement)
+                    {
+                        if (item is IEnumerable && !(item is string))
+                        {
+                            WriteIndent();
+                            Write(prefix);
+                            Write("...");
+                            WriteLine();
+                            if (level < depth)
+                            {
+                                level++;
+                                WriteObject(prefix, item);
+                                level--;
+                            }
+                        }
+                        else
+                        {
+                            WriteObject(prefix, item);
+                        }
+                    }
+                }
+                else
+                {
+                    MemberInfo[] members = element.GetType().GetMembers(BindingFlags.Public | BindingFlags.Instance);
+                    WriteIndent();
+                    Write(prefix);
+                    bool propWritten = false;
+                    foreach (MemberInfo m in members)
+                    {
+                        FieldInfo f = m as FieldInfo;
+                        PropertyInfo p = m as PropertyInfo;
+                        if (f != null || p != null)
+                        {
+                            if (propWritten)
+                            {
+                                WriteTab();
+                            }
+                            else
+                            {
+                                propWritten = true;
+                            }
+                            Write(m.Name);
+                            Write("=");
+                            Type t = f != null ? f.FieldType : p.PropertyType;
+                            if (t.IsValueType || t == typeof(string))
+                            {
+                                WriteValue(f != null ? f.GetValue(element) : p.GetValue(element, null));
+                            }
+                            else
+                            {
+                                if (typeof(IEnumerable).IsAssignableFrom(t))
+                                {
+                                    Write("...");
+                                }
+                                else
+                                {
+                                    Write("{ }");
+                                }
+                            }
+                        }
+                    }
+                    if (propWritten) WriteLine();
+                    if (level < depth)
+                    {
+                        foreach (MemberInfo m in members)
+                        {
+                            FieldInfo f = m as FieldInfo;
+                            PropertyInfo p = m as PropertyInfo;
+                            if (f != null || p != null)
+                            {
+                                Type t = f != null ? f.FieldType : p.PropertyType;
+                                if (!(t.IsValueType || t == typeof(string)))
+                                {
+                                    object value = f != null ? f.GetValue(element) : p.GetValue(element, null);
+                                    if (value != null)
+                                    {
+                                        level++;
+                                        WriteObject(m.Name + ": ", value);
+                                        level--;
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
+
+        private void WriteValue(object o)
+        {
+            if (o == null)
+            {
+                Write("null");
+            }
+            else if (o is DateTime)
+            {
+                Write(((DateTime)o).ToShortDateString());
+            }
+            else if (o is ValueType || o is string)
+            {
+                Write(o.ToString());
+            }
+            else if (o is IEnumerable)
+            {
+                Write("...");
+            }
+            else
+            {
+                Write("{ }");
+            }
+        }
     }
+
+
 }

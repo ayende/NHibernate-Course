@@ -7,23 +7,35 @@
     <id name="Id">
       <generator class="identity"/>
     </id>
-    <version name="Timestamp" 
-             generated="always"
-             type="BinaryBlob"
-             unsaved-value="null">
-      <column name="Timestamp"
-              sql-type="timestamp"
-              />
-    </version>
     <property name="Score" />
-    <many-to-one name="Student" class="Student" />
-
-    <map name="Penalties" table="TestPenalties">
-      <cache usage="read-write"/>
+    
+    <set name="Questions">
       <key column="TestId"/>
-      <index column="TheKey" type="System.String"/>
-      <many-to-many column="PenaltyId" class="Penalty" />
-    </map>
+      <one-to-many class="Question"/>
+    </set>
+  </class>
+
+  <class name="Question">
+    <id name="Id">
+      <generator class="identity"/>
+    </id>
+    <property name="Text"/>
+    <many-to-one name="Test" column="TestId"/>
+
+
+    <set name="Answers">
+      <key column="TestId"/>
+      <one-to-many class="Answer"/>
+    </set>
+  </class>
+
+
+  <class name="Answer">
+    <id name="Id">
+      <generator class="identity"/>
+    </id>
+    <property name="Text"/>
+
   </class>
   
 </hibernate-mapping>
