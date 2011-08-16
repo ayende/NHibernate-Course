@@ -5,11 +5,6 @@
     <property name="connection.connection_string_name">Default</property>
     <property name="dialect">NHibernate.Dialect.MsSql2008Dialect</property>
 
-    
-    <property name="cache.provider_class">NHibernate.Cache.HashtableCacheProvider</property>
-    <property name="cache.use_second_level_cache">true</property>
-    <property name="cache.use_query_cache">true</property>
-    
     <mapping assembly="NHibernateCourse.QuickStart"/>
     
   </session-factory>

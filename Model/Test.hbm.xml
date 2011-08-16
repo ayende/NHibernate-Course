@@ -3,17 +3,21 @@
                    assembly="NHibernateCourse.QuickStart"
                    >
   <class name="Test" table="Tests" batch-size="10">
-    <cache usage="read-write"/>
     <id name="Id">
-      <generator class="identity"/>
+      <generator class="hilo"/>
     </id>
     <property name="Score" />
     <property name="ClientId"/>
+    
     <set name="Questions">
       <key column="TestId"/>
       <one-to-many class="Question"/>
     </set>
-    <filter name="ByClientId"/>
+
+    <set name="Penalties">
+      <key column="PenaltyId"/>
+      <one-to-many class="Penalty"/>
+    </set>
   </class>
 
   <class name="Question">

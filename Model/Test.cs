@@ -9,10 +9,11 @@ namespace NHibernateCourse.QuickStart.Model
         public virtual int Score { get; set; }
         public virtual int ClientId { get; set; }
         public virtual ICollection<Question> Questions { get; set; }
+        public virtual ICollection<Penalty> Penalties { get; set; }
 
         public virtual bool IsValid
         {
-            get { return Score > 0; }
+            get { return true; }
         }
     }
 

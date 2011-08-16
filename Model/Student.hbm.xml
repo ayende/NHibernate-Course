@@ -3,6 +3,7 @@
                    assembly="NHibernateCourse.QuickStart"
                    >
   <class name="Student" table="Students" batch-size="30">
+    <cache usage="nonstrict-read-write"/>
     <id name="Id">
       <generator class="identity"/>
     </id>
@@ -10,10 +11,11 @@
     <property name="Age"/>
     <property name="IsBuly"/>
     <set name="Tests" cascade="all" inverse="true">
+      <cache usage="nonstrict-read-write"/>
       <key column ="Student"/>
       <one-to-many class="Test"/>
     </set>
-    <component name="Address">
+    <component name="Address" lazy="true">
       <property name="City"/>
       <property name="Street"/>
       <property name="HouseNumber"/>
@@ -25,7 +27,7 @@
       <property name="GPA5" type="System.Int32"/>
     </dynamic-component>
     
-    <list name="EmergencyPhones" table="EmergencyPhone" access="none">
+    <list name="EmergencyPhones" table="EmergencyPhone" >
       <key column="StudentId" />
       <index column="Position"/>
       <composite-element class="EmergencyPhone">

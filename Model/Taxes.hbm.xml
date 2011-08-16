@@ -1,0 +1,43 @@
+﻿<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   namespace="NHibernateCourse.QuickStart.Model"
+                   assembly="NHibernateCourse.QuickStart"
+                   >
+  <class name="Owner" table="Owners" batch-size="10">
+    <id name="Id">
+      <generator class="hilo"/>
+    </id>
+    <property name="Name" />
+    <bag name="Accounts" access="none" inverse="true">
+      <key column="OwnerId"/>
+      <one-to-many class="Account"/>
+    </bag>
+  </class>
+
+  <class name="Account" table="Accounts">
+    <id name="Id">
+      <generator class="identity"/>
+    </id>
+    <property name="CurrentlySuing"/>
+    <many-to-one name="Owner" column="OwnerId"/>
+  </class>
+
+  <class name="TaxRecord" table="TaxRecords">
+    <id name="Id">
+      <generator class="identity"/>
+    </id>
+    <property name="TotalDue"/>
+    <property name="Juresdiction"/>
+    <many-to-one name="Account" column="AccountId"/>
+
+  </class>
+
+  <class name="Juresdiction" table="Juresdictions">
+    <id name="Id">
+      <generator class="assigned"/>
+    </id>
+    <bag name="TaxRecords">
+      <key column="Juresdiction"/>
+      <one-to-many class="TaxRecord"/>
+    </bag>
+  </class>
+</hibernate-mapping>
